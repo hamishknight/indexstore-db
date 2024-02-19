@@ -865,9 +865,7 @@ void StoreUnitRepo::onUnitOutOfDate(IDCode unitCode, StringRef unitName,
   for (IDCode depUnit : dependentUnits) {
     if (auto monitor = getUnitMonitor(depUnit)) {
       if (monitor->getModTime() < outOfDateModTime)
-        monitor->markOutOfDate(outOfDateModTime,
-                               DependentUnitOutOfDateTriggerHint::create(unitName, hint),
-                               synchronous);
+        monitor->markOutOfDate(outOfDateModTime, hint, synchronous);
     }
   }
 }
@@ -958,11 +956,8 @@ void UnitMonitor::initialize(IDCode unitCode,
   for (IDCode unitDepCode : userUnitDepends) {
     if (auto depMonitor = unitRepo->getUnitMonitor(unitDepCode)) {
       for (const auto &trigger : depMonitor->getOutOfDateTriggers()) {
-        if (trigger.outOfDateModTime > modTime) {
-          markOutOfDate(trigger.outOfDateModTime,
-                        DependentUnitOutOfDateTriggerHint::create(depMonitor->getUnitName(),
-                                                                  trigger.hint));
-        }
+        if (trigger.outOfDateModTime > modTime)
+          markOutOfDate(trigger.outOfDateModTime, trigger.hint);
       }
     }
   }

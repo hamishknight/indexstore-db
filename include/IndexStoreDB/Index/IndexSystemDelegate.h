@@ -49,22 +49,6 @@ public:
   virtual std::string description() override;
 };
 
-class DependentUnitOutOfDateTriggerHint : public OutOfDateTriggerHint {
-  std::string UnitName;
-  OutOfDateTriggerHintRef DepHint;
-
-public:
-  DependentUnitOutOfDateTriggerHint(StringRef unitName, OutOfDateTriggerHintRef depHint)
-  : UnitName(unitName), DepHint(std::move(depHint)) {}
-
-  static OutOfDateTriggerHintRef create(StringRef unitName, OutOfDateTriggerHintRef depHint) {
-    return std::make_shared<DependentUnitOutOfDateTriggerHint>(unitName, std::move(depHint));
-  }
-
-  virtual std::string originalFileTrigger() override;
-  virtual std::string description() override;
-};
-
 class INDEXSTOREDB_EXPORT IndexSystemDelegate {
 public:
   virtual ~IndexSystemDelegate() {}

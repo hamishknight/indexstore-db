@@ -641,17 +641,6 @@ std::string DependentFileOutOfDateTriggerHint::description() {
   return FilePath;
 }
 
-std::string DependentUnitOutOfDateTriggerHint::originalFileTrigger() {
-  return DepHint->originalFileTrigger();
-}
-
-std::string DependentUnitOutOfDateTriggerHint::description() {
-  std::string desc;
-  llvm::raw_string_ostream OS(desc);
-  OS << "unit(" << UnitName << ") -> " << DepHint->description();
-  return desc;
-}
-
 void IndexSystemDelegate::anchor() {}
 
 std::shared_ptr<IndexSystem>
