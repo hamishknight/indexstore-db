@@ -148,7 +148,7 @@ public:
 
   void onUnitOutOfDate(IDCode unitCode, StringRef unitName,
                        sys::TimePoint<> outOfDateModTime,
-                       OutOfDateTriggerHintRef hint,
+                       DependentFileOutOfDateTriggerHintRef hint,
                        bool synchronous = false);
   void onFSEvent(std::vector<std::string> parentPaths);
   void checkUnitContainingFileIsOutOfDate(StringRef file);
@@ -185,7 +185,7 @@ public:
 
 class UnitMonitor {
   struct OutOfDateTrigger {
-    OutOfDateTriggerHintRef hint;
+    DependentFileOutOfDateTriggerHintRef hint;
     sys::TimePoint<> outOfDateModTime;
 
     std::string getTriggerFilePath() const {
@@ -220,7 +220,7 @@ public:
   std::vector<OutOfDateTrigger> getOutOfDateTriggers() const;
 
   void checkForOutOfDate(sys::TimePoint<> outOfDateModTime, StringRef filePath, bool synchronous=false);
-  void markOutOfDate(sys::TimePoint<> outOfDateModTime, OutOfDateTriggerHintRef hint, bool synchronous=false);
+  void markOutOfDate(sys::TimePoint<> outOfDateModTime, DependentFileOutOfDateTriggerHintRef hint, bool synchronous=false);
 
   static std::pair<StringRef, sys::TimePoint<>> getMostRecentModTime(ArrayRef<StringRef> filePaths);
   static sys::TimePoint<> getModTimeForOutOfDateCheck(StringRef filePath);
@@ -827,7 +827,7 @@ void StoreUnitRepo::removeUnitMonitor(IDCode unitCode) {
 
 void StoreUnitRepo::onUnitOutOfDate(IDCode unitCode, StringRef unitName,
                                     sys::TimePoint<> outOfDateModTime,
-                                    OutOfDateTriggerHintRef hint,
+                                    DependentFileOutOfDateTriggerHintRef hint,
                                     bool synchronous) {
   CanonicalFilePath MainFilePath;
   std::string OutFileIdentifier;
@@ -996,7 +996,7 @@ void UnitMonitor::checkForOutOfDate(sys::TimePoint<> outOfDateModTime, StringRef
     markOutOfDate(outOfDateModTime, DependentFileOutOfDateTriggerHint::create(filePath), synchronous);
 }
 
-void UnitMonitor::markOutOfDate(sys::TimePoint<> outOfDateModTime, OutOfDateTriggerHintRef hint, bool synchronous) {
+void UnitMonitor::markOutOfDate(sys::TimePoint<> outOfDateModTime, DependentFileOutOfDateTriggerHintRef hint, bool synchronous) {
   {
     sys::ScopedLock L(StateMtx);
     OutOfDateTrigger trigger{ hint, outOfDateModTime};

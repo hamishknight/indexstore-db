@@ -82,7 +82,7 @@ public:
 
   void unitIsOutOfDate(StoreUnitInfo unitInfo,
                        llvm::sys::TimePoint<> outOfDateModTime,
-                       OutOfDateTriggerHintRef hint,
+                       DependentFileOutOfDateTriggerHintRef hint,
                        bool synchronous) override {
     DelegateEvent event{INDEXSTOREDB_EVENT_UNIT_OUT_OF_DATE, 0,
       &unitInfo,

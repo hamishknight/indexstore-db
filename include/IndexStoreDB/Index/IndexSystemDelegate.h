@@ -21,32 +21,22 @@
 namespace IndexStoreDB {
 namespace index {
   struct StoreUnitInfo;
+  class DependentFileOutOfDateTriggerHint;
 
-/// Used to document why a unit was considered out-of-date.
-/// Primarily used for logging/debugging purposes.
-class OutOfDateTriggerHint {
-public:
-  virtual ~OutOfDateTriggerHint() {}
-  virtual std::string originalFileTrigger() = 0;
-  virtual std::string description() = 0;
+typedef std::shared_ptr<DependentFileOutOfDateTriggerHint> DependentFileOutOfDateTriggerHintRef;
 
-private:
-  virtual void _anchor();
-};
-typedef std::shared_ptr<OutOfDateTriggerHint> OutOfDateTriggerHintRef;
-
-class DependentFileOutOfDateTriggerHint : public OutOfDateTriggerHint {
+class DependentFileOutOfDateTriggerHint {
   std::string FilePath;
 
 public:
   explicit DependentFileOutOfDateTriggerHint(StringRef filePath) : FilePath(filePath) {}
 
-  static OutOfDateTriggerHintRef create(StringRef filePath) {
+  static DependentFileOutOfDateTriggerHintRef create(StringRef filePath) {
     return std::make_shared<DependentFileOutOfDateTriggerHint>(filePath);
   }
 
-  virtual std::string originalFileTrigger() override;
-  virtual std::string description() override;
+  std::string originalFileTrigger();
+  std::string description();
 };
 
 class INDEXSTOREDB_EXPORT IndexSystemDelegate {
@@ -63,7 +53,7 @@ public:
 
   virtual void unitIsOutOfDate(StoreUnitInfo unitInfo,
                                llvm::sys::TimePoint<> outOfDateModTime,
-                               OutOfDateTriggerHintRef hint,
+                               DependentFileOutOfDateTriggerHintRef hint,
                                bool synchronous = false) {}
 
 private:

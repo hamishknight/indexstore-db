@@ -96,7 +96,7 @@ private:
 
   virtual void unitIsOutOfDate(StoreUnitInfo unitInfo,
                                llvm::sys::TimePoint<> outOfDateModTime,
-                               OutOfDateTriggerHintRef hint,
+                               DependentFileOutOfDateTriggerHintRef hint,
                                bool synchronous) override {
     if (synchronous) {
       Queue.dispatchSync([&]{
@@ -630,8 +630,6 @@ bool IndexSystemImpl::foreachUnitTestSymbol(function_ref<bool(SymbolOccurrenceRe
 //===----------------------------------------------------------------------===//
 // IndexSystem
 //===----------------------------------------------------------------------===//
-
-void OutOfDateTriggerHint::_anchor() {}
 
 std::string DependentFileOutOfDateTriggerHint::originalFileTrigger() {
   return FilePath;
